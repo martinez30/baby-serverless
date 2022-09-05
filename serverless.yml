@@ -24,7 +24,7 @@ functions:
           bucket: ${self:custom.relatoriosBucket}
           rules:  
             - prefix: relatorios/ 
-            - suffix: .xls
+            - suffix: .xlsx
           
 resources:
   Resources:
