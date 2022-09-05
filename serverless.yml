@@ -54,4 +54,4 @@ resources:
                     - "arn:aws:s3:::"
                     -
                       Ref: "RelatoriosBucket"
-                    - "/*"
+                    - "/*" 
