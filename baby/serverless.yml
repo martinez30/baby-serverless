@@ -1,4 +1,6 @@
-service: baby
+org: martinez30
+app: baby-serverless
+service: baby-serverless
 frameworkVersion: '3'
 
 custom:
