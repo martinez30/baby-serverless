@@ -1,0 +1,55 @@
+service: baby
+frameworkVersion: '3'
+
+custom:
+  relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo'
+
+provider:
+  name: aws
+  profile: aluno_1
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+      - s3:
+          bucket: ${self:custom.relatoriosBucket}
+          rules:  
+            - prefix: relatorios/ 
+            - suffix: .xls
+          
+resources:
+  Resources:
+    RelatoriosBucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: ${self:custom.relatoriosBucket}
+        AccessControl: Private
+    PostsBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket:
+          Ref: RelatoriosBucket
+        PolicyDocument:
+          Statement:
+            -
+              Effect: "Allow"
+              Principal: "*"
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+                - s3:DeleteObject
+              Resource:
+                Fn::Join:
+                  - ""
+                  -
+                    - "arn:aws:s3:::"
+                    -
+                      Ref: "RelatoriosBucket"
+                    - "/*"
