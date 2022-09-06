@@ -14,11 +14,14 @@ provider:
   stage: ${opt:stage, 'test'}
   region: ${opt:region, 'us-east-2'}
   environment:
-    BUCKET_NAME: ${self:custom.relatoriosBucket}
+    NOME_DESTINATARIO: ${param:NOME_DESTINATARIO}
+    EMAIL_DESTINATARIO: ${param:EMAIL_DESTINATARIO}
+    EMAIL_HOST_SMTP: ${param:EMAIL_HOST_SMTP}
+    SENHA_HOST_SMTP: ${param:SENHA_HOST_SMTP}
 
 functions:
   onUpload:
-    handler: handler.onUpload
+    handler: src/functions/uploadS3.onUpload
     events:
       - s3:
           bucket: ${self:custom.relatoriosBucket}
