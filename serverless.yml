@@ -23,5 +23,5 @@ functions:
       - s3:
           bucket: ${self:custom.relatoriosBucket}
           rules:  
-            - prefix: relatorios/ 
+            - prefix: ${param:folder_bucket}/ 
             - suffix: .xlsx
