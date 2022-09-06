@@ -11,20 +11,18 @@ provider:
   profile: aluno_1
   runtime: nodejs14.x
   stage: ${opt:stage, 'test'}
-  region: ${opt:region, 'sa-east-1'}
+  region: ${opt:region, 'us-east-2'}
   environment:
     BUCKET_NAME: ${self:custom.relatoriosBucket}
 
 functions:
   hello:
-    handler: handler.hello
+    handler: handler
     events:
-      - httpApi:
-          path: /
-          method: get
       - s3:
           bucket: ${self:custom.relatoriosBucket}
+          event: s3:ObjectCreated:*
           rules:  
-            - prefix: ${param:folder_bucket}/ 
+            - prefix: ${param:folder_bucket, 'relatorios'}/ 
             - suffix: .xlsx
     
