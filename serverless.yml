@@ -4,24 +4,40 @@ service: baby-serverless
 frameworkVersion: '3'
 
 custom:
-  relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo-2'
+  relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo-${self:provider.region}'
+  folder_bucket: '${param:folder_bucket, "relatorios"}/'
 
 provider:
   name: aws
   profile: aluno_1
   runtime: nodejs14.x
   stage: ${opt:stage, 'test'}
-  region: ${opt:region, 'sa-east-1'}
+  region: ${opt:region, 'us-east-2'}
+  environment:
+    NOME_DESTINATARIO: ${param:NOME_DESTINATARIO}
+    EMAIL_DESTINATARIO: ${param:EMAIL_DESTINATARIO}
+    EMAIL_HOST_SMTP: ${param:EMAIL_HOST_SMTP}
+    SENHA_HOST_SMTP: ${param:SENHA_HOST_SMTP}
 
 functions:
-  hello:
-    handler: handler.hello
+  onUpload:
+    handler: src/functions/uploadS3.onUpload
     events:
-      - httpApi:
-          path: /
-          method: get
       - s3:
           bucket: ${self:custom.relatoriosBucket}
+          event: s3:ObjectCreated:*
           rules:  
-            - prefix: ${param:folder_bucket}/ 
+            - prefix: ${self:custom.folder_bucket}
+            - suffix: .xls
+      - s3:
+          bucket: ${self:custom.relatoriosBucket}
+          event: s3:ObjectCreated:*
+          rules:  
+            - prefix: ${self:custom.folder_bucket} 
+            - suffix: .csv
+      - s3:
+          bucket: ${self:custom.relatoriosBucket}
+          event: s3:ObjectCreated:*
+          rules:  
+            - prefix: ${self:custom.folder_bucket} 
             - suffix: .xlsx
