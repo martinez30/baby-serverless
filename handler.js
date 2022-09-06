@@ -7,44 +7,24 @@ const s3 = new AWS.S3();
 
 module.exports.onUpload = async (event) => {
   try {
-    const { filename, data } = extractFile(event);
-    await s3
-      .putObject({
-        Bucket: BUCKET_NAME,
-        Key: filename,
-        ACL: "public-read",
-        Body: data,
-      })
-      .promise();
+    const key = event.Records[0].s3.object.key;
 
-    const link = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
+    const data = await s3.getObject({
+      Bucket: event.Records[0].s3.bucket.name,
+      Key
+    });
 
-    console.log(link);
+    const s3Object = JSON.parse(data.body);
+    console.log("s3Object", s3Object);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        link,
-      }),
-    };
+    // const link = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
+    // console.log("link", link);
+    return;
   } catch (err) {
+    console.log("err", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: err.stack }),
     };
   }
 };
-
-function extractFile(event) {
-  const boundary = parseMultipart.getBoundary(event.headers["content-type"]);
-  const parts = parseMultipart.Parse(
-    Buffer.from(event.body, "base64"),
-    boundary
-  );
-  const [{ filename, data }] = parts;
-
-  return {
-    filename,
-    data,
-  };
-}

@@ -5,6 +5,7 @@ frameworkVersion: '3'
 
 custom:
   relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo-${self:provider.region}'
+  folder_bucket: '${param:folder_bucket, "relatorios"}/'
 
 provider:
   name: aws
@@ -14,7 +15,6 @@ provider:
   region: ${opt:region, 'us-east-2'}
   environment:
     BUCKET_NAME: ${self:custom.relatoriosBucket}
-    FOLDER_BUCKET: '${param:folder_bucket, "relatorios"}/'
 
 functions:
   onUpload:
@@ -24,18 +24,18 @@ functions:
           bucket: ${self:custom.relatoriosBucket}
           event: s3:ObjectCreated:*
           rules:  
-            - prefix: ${env:FOLDER_BUCKET}/ 
+            - prefix: ${self:custom.folder_bucket}
             - suffix: .xls
       - s3:
           bucket: ${self:custom.relatoriosBucket}
           event: s3:ObjectCreated:*
           rules:  
-            - prefix: ${env:FOLDER_BUCKET}/ 
+            - prefix: ${self:custom.folder_bucket} 
             - suffix: .csv
       - s3:
           bucket: ${self:custom.relatoriosBucket}
           event: s3:ObjectCreated:*
           rules:  
-            - prefix: ${env:FOLDER_BUCKET}/ 
+            - prefix: ${self:custom.folder_bucket} 
             - suffix: .xlsx
     
