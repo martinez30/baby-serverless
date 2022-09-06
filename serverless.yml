@@ -16,8 +16,8 @@ provider:
     BUCKET_NAME: ${self:custom.relatoriosBucket}
 
 functions:
-  hello:
-    handler: handler
+  onUpload:
+    handler: handler.onUpload
     events:
       - s3:
           bucket: ${self:custom.relatoriosBucket}
@@ -25,4 +25,6 @@ functions:
           rules:  
             - prefix: ${param:folder_bucket, 'relatorios'}/ 
             - suffix: .xlsx
+            - suffix: .xls
+            - suffix: .csv
     

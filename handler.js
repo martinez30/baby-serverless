@@ -5,7 +5,7 @@ const { BUCKET_NAME } = process.env;
 
 const s3 = new AWS.S3();
 
-module.exports = async (event) => {
+module.exports.onUpload = async (event) => {
   try {
     const { filename, data } = extractFile(event);
     await s3
