@@ -10,8 +10,6 @@ provider:
   name: aws
   profile: aluno_1
   runtime: nodejs14.x
-  stage: ${opt:stage, 'test'}
-  region: ${aws:region, opt:region, 'sa-east-1'}
 
 functions:
   hello:
