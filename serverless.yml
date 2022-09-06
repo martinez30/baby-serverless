@@ -4,7 +4,7 @@ service: baby-serverless
 frameworkVersion: '3'
 
 custom:
-  relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo-2'
+  relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo-${self:provider.region}'
 
 provider:
   name: aws
