@@ -11,7 +11,7 @@ provider:
   profile: aluno_1
   runtime: nodejs14.x
   stage: ${opt:stage, 'test'}
-  region: ${param:region, opt:region, 'sa-east-1'}
+  region: ${aws:region}
 
 functions:
   hello:
