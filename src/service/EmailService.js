@@ -17,7 +17,6 @@ class EmailService {
   async #enviaEmail(email, subject, body) {
     const sender = this.#carregaSMTP();
 
-    
     await sender.sendMail({
         to: email,
         subject,
@@ -45,4 +44,4 @@ class EmailService {
   }
 }
 
-export default new EmailService();
+module.exports = new EmailService();
