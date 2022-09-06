@@ -10,7 +10,7 @@ provider:
   name: aws
   profile: aluno_1
   runtime: nodejs14.x
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'test'}
   region: ${opt:region, 'sa-east-1'}
 
 functions:
@@ -33,7 +33,7 @@ resources:
       Properties: 
         BucketName: ${self:custom.relatoriosBucket}
         AccessControl: Private
-    PostsBucketPolicy:
+    RelatoriosBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties: 
         Bucket:
