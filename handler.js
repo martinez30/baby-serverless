@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports.hello = async (event) => {
+  console.log(JSON.stringify('event', event))
   return {
     statusCode: 200,
     body: JSON.stringify(

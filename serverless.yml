@@ -1,0 +1,27 @@
+org: martinez30
+app: baby-serverless
+service: baby-serverless
+frameworkVersion: '3'
+
+custom:
+  relatoriosBucket: '${self:service}-${self:provider.stage}-relatorios-bucket-paulo-2'
+
+provider:
+  name: aws
+  profile: aluno_1
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'test'}
+  region: ${opt:region, 'sa-east-1'}
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+      - s3:
+          bucket: ${self:custom.relatoriosBucket}
+          rules:  
+            - prefix: ${param:folder_bucket}/ 
+            - suffix: .xlsx
