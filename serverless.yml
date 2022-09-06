@@ -12,6 +12,8 @@ provider:
   runtime: nodejs14.x
   stage: ${opt:stage, 'test'}
   region: ${opt:region, 'sa-east-1'}
+  environment:
+    BUCKET_NAME: ${self:custom.relatoriosBucket}
 
 functions:
   hello:
@@ -25,3 +27,4 @@ functions:
           rules:  
             - prefix: ${param:folder_bucket}/ 
             - suffix: .xlsx
+    

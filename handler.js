@@ -1,25 +1,34 @@
-console.log('Loading function');
-        
-const aws = require('aws-sdk');
-
-const s3 = new aws.S3({ apiVersion: '2006-03-01' });
-
-exports.handler = async (event, context) => {
-    const bucket = event.Records[0].s3.bucket.name;
-    const key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
-    const params = {
-        Bucket: bucket,
-        Key: key,
-    }; 
-    try {
-        const { ContentType } = await s3.getObject(params).promise();
-        console.log('CONTENT TYPE:', ContentType);
-        return ContentType;
-    } catch (err) {
-        console.log(err);
-        const message = `Error getting object ${key} from bucket ${bucket}. Make sure they exist and your bucket is in the same region as this function.`;
-        console.log(message);
-        throw new Error(message);
+const AWS = require('aws-sdk');
+const parseMultipart = require('parse-multipart');
+ 
+const { BUCKET_NAME } = process.env;
+ 
+const s3 = new AWS.S3();
+ 
+module.exports.handle = async (event) => {
+  try {
+    const { filename, data } = extractFile(event)
+     await s3.putObject({ Bucket: BUCKET_NAME, Key: filename, ACL: 'public-read', Body: data }).promise();
+ 
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ link: `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}` })
     }
-};
-      
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: err.stack })
+    }
+  }
+}
+ 
+function extractFile(event) {
+  const boundary = parseMultipart.getBoundary(event.headers['content-type'])
+  const parts = parseMultipart.Parse(Buffer.from(event.body, 'base64'), boundary);
+  const [{ filename, data }] = parts
+ 
+  return {
+    filename,
+    data
+  }
+}
