@@ -29,16 +29,49 @@ functions:
           rules:  
             - prefix: ${self:custom.folder_bucket}
             - suffix: .xls
+          existing: true
       - s3:
           bucket: ${self:custom.relatoriosBucket}
           event: s3:ObjectCreated:*
           rules:  
             - prefix: ${self:custom.folder_bucket} 
             - suffix: .csv
+          existing: true
       - s3:
           bucket: ${self:custom.relatoriosBucket}
           event: s3:ObjectCreated:*
           rules:  
             - prefix: ${self:custom.folder_bucket} 
             - suffix: .xlsx
+          existing: true
     
+
+resources:
+  Resources:
+    RelatoriosBucket:
+        Type: AWS::S3::Bucket
+        Properties: 
+          BucketName: ${self:custom.relatoriosBucket}
+          AccessControl: Private
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: 
+          Ref: RelatoriosBucket
+        PolicyDocument: 
+          Statement:
+            -
+              Effect: "Allow"
+              Principal: "*"
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+                - s3:DeleteObject
+              Resource:
+                Fn::Join:
+                  - ""
+                  -
+                    - "arn:aws:s3:::"
+                    -
+                      Ref: "RelatoriosBucket"
+                    - "/*"
