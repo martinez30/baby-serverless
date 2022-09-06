@@ -41,4 +41,3 @@ functions:
           rules:  
             - prefix: ${self:custom.folder_bucket} 
             - suffix: .xlsx
-    
