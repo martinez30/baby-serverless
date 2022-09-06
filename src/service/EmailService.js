@@ -33,7 +33,6 @@ class EmailService {
     const corpoDoEmail = `
     <p>Olá ${NOME_DESTINATARIO}</p>
     <p>Um novo relatório foi recebido</p>
-    <br />
     <p>Clique no link abaixo para baixar o relatório</p>
     ${
         links_arquivos.map(link => `<a href="${link}">${link}</a>`).join("<br />")

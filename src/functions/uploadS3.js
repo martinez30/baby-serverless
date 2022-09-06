@@ -1,4 +1,4 @@
-const { default: EmailService } = require("../service/EmailService");
+const EmailService = require("../service/EmailService");
 const S3Service = require("../service/S3Service");
 
 module.exports.onUpload = async (event) => {
