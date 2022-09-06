@@ -4,7 +4,7 @@ const S3Service = require("../service/S3Service");
 module.exports.onUpload = async (event) => {
   try {
     const links = event.Records.map((registro) => {
-      return S3Service.geracaoDoLinkAcessoAoArquivo(
+      return S3Service.geracaoLinkAcessoAoArquivo(
         registro.s3.bucket.name,
         registro.s3.object
       );
